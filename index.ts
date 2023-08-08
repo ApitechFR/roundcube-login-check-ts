@@ -87,11 +87,11 @@ async function doRoundcubeLoginBasic(
   
       await page.waitForSelector('#rcmloginsubmit').then(async x => 
         {
-          console.log('Roundcube page detected !');
+          console.log('[Roundcube] Login page detected !');
   
           await page.type('#rcmloginuser', config.username);
           await page.type('#rcmloginpwd', config.password);
-          console.log('Roundcube login form filled !');
+          console.log('[Roundcube] Login form filled !');
   
           // Redirection - Roundcube to Keycloak
           //
@@ -133,7 +133,7 @@ async function doRoundcubeLoginBasic(
                   .then((r:any) =>
                     {
                       console.debug(r);
-                      throw new Error('Keycloak authentication failed (Wrong credentials ?) !');
+                      throw new Error('[Roundcube] Authentication failed (Wrong credentials ?) !');
                       //throw new UnauthorizedException()
                     })
                   .catch((e:Error) =>
@@ -146,7 +146,7 @@ async function doRoundcubeLoginBasic(
                       else { throw e; }
                     }),
               //
-              page.click('#rcmloginsubmit').then((c:any) => { console.log('Roundcube login triggered !'); }),
+              page.click('#rcmloginsubmit').then((c:any) => { console.log('[Roundcube] Login triggered !'); }),
               //
               // Mail page loaded successfully
               // (that means we're authenticated)
@@ -154,7 +154,7 @@ async function doRoundcubeLoginBasic(
               page.waitForResponse((r:any) => r.status() === 200 
                     && r.url().includes('?_task=mail')
               )
-                  .then((r:any) => { console.log('Connected to Roundcube !'); })
+                  .then((r:any) => { console.log('[Roundcube] Connection successful !'); })
                   .catch((e: Error) => {console.log('timeout',e)}),
               //
               // First refresh sent
@@ -164,7 +164,7 @@ async function doRoundcubeLoginBasic(
                     && r.url().includes('_task=mail')
                     && r.url().includes('_refresh=1')
               )
-                  .then((r:any) => { console.log('Roundcube refresh request sent !'); })
+                  .then((r:any) => { console.log('[Roundcube] Refresh request sent !'); })
                   .catch((e: Error) => {console.log('timeout',e)}),
             ]
           );
@@ -199,14 +199,14 @@ async function doRoundcubeLoginOAuth(
   
       await page.waitForSelector('#kc-form-login').then(async (x:any) => 
         {
-          console.log('Keycloak page detected !');
+          console.log('[Keycloak] Login page detected !');
   
           await page.type('#username', config.username);
           await page.type('#password', config.password);
           console.log('Keycloak login form filled !');
   
           await page.click('#kc-login');
-          console.log('Keycloak login triggered !');
+          console.log('[Keycloak] Login triggered !');
   
           // Redirection - Roundcube to Keycloak
           //
@@ -226,7 +226,7 @@ async function doRoundcubeLoginOAuth(
               page.waitForResponse((r:any) => r.status() === 200 
                     && r.url().includes('?_task=mail')
               )
-                  .then((r:any) => { console.log('Connected to Roundcube !'); }),
+                  .then((r:any) => { console.log('[Roundcube] Connection successful !'); }),
               //
               // First refresh sent
               // (just to wait a bit, so we're sure that the import plugin has been triggered)
@@ -235,20 +235,20 @@ async function doRoundcubeLoginOAuth(
                     && r.url().includes('_task=mail')
                     && r.url().includes('_refresh=1')
               )
-                  .then((r:any) => { console.log('Roundcube refresh request sent !'); }),
+                  .then((r:any) => { console.log('[Roundcube] Refresh request sent !'); }),
               //
               page.waitForSelector('#input-error', {timeout: 3000})
                   .then((r:any) =>
                     {
-                      console.debug("Error found on Keycloak authentication page.");
-                      throw new Error('Keycloak authentication failed (Wrong credentials ?) !');
+                      console.debug("[Keycloak] Error found on authentication page.");
+                      throw new Error('[Keycloak] Authentication failed (Wrong credentials ?) !');
                       //throw new UnauthorizedException()
                     })
                   .catch((e: Error) =>
                     {
                       if(e.name === 'TimeoutError') // https://github.com/puppeteer/puppeteer/issues/7545
                       {
-                        console.debug("No error found on Keycloak authentication page.");
+                        console.debug("[Keycloak] No error found on authentication page.");
                       }
                       else { throw e; }                      
                     }),
