@@ -1,4 +1,4 @@
-# Roundcube (Login) Helper
+# Roundcube Login Check TS
 
 This script aims at triggering a valid Roundcube login request, needed to trigger some Roundcube plugin functions (via Roundcube hooks like `ready`).
 It uses `puppeteer` to start a headless chrome instance and watch/wait for conditionsn, and `meow` to handle arguments. 
