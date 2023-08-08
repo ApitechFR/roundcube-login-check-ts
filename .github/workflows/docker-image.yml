@@ -18,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     # Execute only for branch 'main'
-    if: github.ref == 'refs/heads/main'
+    # @see https://stackoverflow.com/a/66463380/8179249 (comments)
+    # @see https://stackoverflow.com/a/74690436/8179249 (answer)
+    if: endsWith(github.event.base_ref, 'main') == true
 
     # Sets the permissions granted to the GITHUB_TOKEN for the actions in this job.
     permissions:
