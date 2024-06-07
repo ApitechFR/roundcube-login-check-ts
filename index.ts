@@ -246,7 +246,7 @@ async function doRoundcubeLoginOAuth(
                     && r.url().includes('_task=mail')
                     && r.url().includes('_refresh=1')
               )
-                  .then((r:any) => { console.log('[Roundcube] Refresh request sent !'); }),
+                  .then((r:any) => { console.log('[Roundcube] Refresh request sent !'); })
                   .catch((e: Error) =>
                         {
                           if(e.name === 'TimeoutError') // https://github.com/puppeteer/puppeteer/issues/7545
