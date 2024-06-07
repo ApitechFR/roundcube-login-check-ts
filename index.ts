@@ -241,16 +241,19 @@ async function doRoundcubeLoginOAuth(
                   .then((r:any) =>
                     {
                       console.debug("[Keycloak] Error found on authentication page.");
-                      throw new Error('[Keycloak] Authentication failed (Wrong credentials ?) !');
+                      throw new Error('[Keycloak] Authentication failed (Wrong credentials ?) Error detected : #input-error !');
                       //throw new UnauthorizedException()
                     })
                   .catch((e: Error) =>
                     {
                       if(e.name === 'TimeoutError') // https://github.com/puppeteer/puppeteer/issues/7545
                       {
-                        console.debug("[Keycloak] No error found on authentication page.");
+                        console.debug("[Keycloak] No error : #input-error not found on authentication page");
                       }
-                      else { throw e; }                      
+                      else { 
+                          console.debug("[Keycloak] Catch an error but no timeout - error : "+e);
+                          //throw e; 
+                      }                      
                     }),
             ]
           );
