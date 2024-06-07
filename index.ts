@@ -224,9 +224,20 @@ async function doRoundcubeLoginOAuth(
               // (that means we're authenticated)
               //
               page.waitForResponse((r:any) => r.status() === 200 
-                    && r.url().includes('?_task=mail')
+                    && r.url().includes('?_task=mail'), {timeout: 30000}
               )
-                  .then((r:any) => { console.log('[Roundcube] Connection successful !'); }),
+                  .then((r:any) => { console.log('[Roundcube] Connection successful !'); })
+                  .catch((e: Error) =>
+                        {
+                          if(e.name === 'TimeoutError') // https://github.com/puppeteer/puppeteer/issues/7545
+                          {
+                            console.debug("[Keycloak] waitForResponse : Timeout expired");
+                          }
+                          else { 
+                              console.debug("[Keycloak] waitForResponse-> Catch an error but no timeout - error : "+e);
+                              throw e; 
+                          }                      
+                        }),
               //
               // First refresh sent
               // (just to wait a bit, so we're sure that the import plugin has been triggered)
@@ -236,6 +247,17 @@ async function doRoundcubeLoginOAuth(
                     && r.url().includes('_refresh=1')
               )
                   .then((r:any) => { console.log('[Roundcube] Refresh request sent !'); }),
+                  .catch((e: Error) =>
+                        {
+                          if(e.name === 'TimeoutError') // https://github.com/puppeteer/puppeteer/issues/7545
+                          {
+                            console.debug("[Keycloak] waitForRequest : Timeout expired");
+                          }
+                          else { 
+                              console.debug("[Keycloak] waitForRequest-> Catch an error but no timeout - error : "+e);
+                              throw e; 
+                          }                      
+                        }),
               //
               page.waitForSelector('#input-error', {timeout: 3000})
                   .then((r:any) =>
@@ -252,7 +274,7 @@ async function doRoundcubeLoginOAuth(
                       }
                       else { 
                           console.debug("[Keycloak] Catch an error but no timeout - error : "+e);
-                          //throw e; 
+                          throw e; 
                       }                      
                     }),
             ]
@@ -265,7 +287,7 @@ async function doRoundcubeLoginOAuth(
     }
     catch(exception)
     {
-      console.error(exception);
+      console.error("Global catch : "+exception);
     }
     finally
     {
